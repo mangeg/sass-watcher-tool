@@ -1,0 +1,31 @@
+[*.cs]
+
+# CS8602: Dereference of a possibly null reference.
+dotnet_diagnostic.CS8602.severity = none
+
+# CS8618: Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+dotnet_diagnostic.CS8618.severity = none
+
+# CA1064: Exceptions should be public
+dotnet_diagnostic.CA1064.severity = none
+
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1812: Unused classes
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1034: Nested types should not be visible
+dotnet_diagnostic.CA1034.severity = none
+
+# CS8600: Converting null literal or possible null value to non-nullable type.
+dotnet_diagnostic.CS8600.severity = none
+
+# CA1806: Do not ignore method results
+dotnet_diagnostic.CA1806.severity = none
+
+# CS8625: Cannot convert null literal to non-nullable reference type.
+dotnet_diagnostic.CS8625.severity = none
+
+# CA1813: Avoid unsealed attributes
+dotnet_diagnostic.CA1813.severity = none

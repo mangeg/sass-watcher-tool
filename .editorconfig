@@ -1,0 +1,135 @@
+root = true
+
+charset = utf-8
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.json]
+indent_style = space
+indent_size  = 3
+
+[*.cs]
+indent_style                                                            = space
+indent_size                                                             = 4
+dotnet_sort_system_directives_first                                     = true
+csharp_space_between_parentheses                                        = control_flow_statements
+csharp_space_after_keywords_in_control_flow_statements                  = true
+csharp_space_between_method_call_parameter_list_parentheses             = true
+csharp_space_between_method_declaration_parameter_list_parentheses      = true
+csharp_new_line_before_open_brace                                       = accessors, anonymous_methods, anonymous_types, control_blocks, events, indexers, local_functions, methods, object_collection, properties, types
+csharp_style_namespace_declarations                                     = file_scoped:suggestion
+csharp_using_directive_placement                                        = inside_namespace:silent
+
+# only use var when it's obvious what the variable type is
+csharp_style_var_for_built_in_types                                     = false : none
+csharp_style_var_when_type_is_apparent                                  = false : none
+csharp_style_var_elsewhere                                              = false : suggestion
+
+# avoid this. unless absolutely necessary
+dotnet_style_qualification_for_field                                    = false : suggestion
+dotnet_style_qualification_for_property                                 = false : suggestion
+dotnet_style_qualification_for_method                                   = false : suggestion
+dotnet_style_qualification_for_event                                    = false : suggestion
+
+# Private fields must start with underscore
+dotnet_naming_rule.private_fields_should_have_prefix.severity           = warning
+dotnet_naming_rule.private_fields_should_have_prefix.symbols            = private_fields
+dotnet_naming_rule.private_fields_should_have_prefix.style              = field_prefix_style
+
+dotnet_naming_symbols.private_fields.applicable_kinds                   = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities         = private, internal
+
+dotnet_naming_style.field_prefix_style.required_prefix                  = _
+dotnet_naming_style.field_prefix_style.capitalization                   = camel_case
+
+# name all constant fields using PascalCase
+dotnet_naming_rule.constant_fields_should_be_pascal_case.severity       = warning
+dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols        = constant_fields
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style          = pascal_case_style
+
+dotnet_naming_symbols.constant_fields.applicable_kinds                  = field
+dotnet_naming_symbols.constant_fields.required_modifiers                = const
+
+dotnet_naming_style.pascal_case_style.capitalization                    = pascal_case
+
+# name none-fields elemets using PascalCase
+dotnet_naming_rule.none_private_elements_should_be_pascal_case.severity = warning
+dotnet_naming_rule.none_private_elements_should_be_pascal_case.symbols  = none_fields_symbols
+dotnet_naming_rule.none_private_elements_should_be_pascal_case.style    = pascal_case_style
+
+dotnet_naming_symbols.none_fields_symbols.applicable_kinds              = property,event
+
+# name none-fields elemets using PascalCase
+dotnet_naming_rule.public_elements_should_be_pascal_case.severity       = warning
+dotnet_naming_rule.public_elements_should_be_pascal_case.symbols        = public_element_symbols
+dotnet_naming_rule.public_elements_should_be_pascal_case.style          = pascal_case_style
+
+dotnet_naming_symbols.public_element_symbols.applicable_kinds           = property,event,field
+dotnet_naming_symbols.public_element_symbols.applicable_accessibilities = public
+
+# CA1308: Normalize strings to uppercase
+dotnet_diagnostic.CA1308.severity = none
+
+# RCS1021: Simplify lambda expression.
+dotnet_diagnostic.RCS1021.severity = none
+
+# SA1316: Tuple element names should use correct casing
+dotnet_diagnostic.SA1316.severity = none
+
+# SA1011: Closing square brackets should be spaced correctly
+dotnet_diagnostic.SA1011.severity = none
+
+# RCS1188: Remove redundant auto-property initialization.
+dotnet_diagnostic.RCS1188.severity = none
+
+# RCS1170: Use read-only auto-implemented property.
+dotnet_diagnostic.RCS1170.severity = none
+
+# CA1040: Avoid empty interfaces
+dotnet_diagnostic.CA1040.severity = none
+
+# CA1816: Avoid empty interfaces
+dotnet_diagnostic.CA1816.severity = none
+
+# CA1031: Do not catch general exception types
+dotnet_diagnostic.CA1031.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = none
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = none
+
+# CA2201: Do not raise reserved exception types
+dotnet_diagnostic.CA2201.severity = none
+
+# CA1032: Implement standard exception constructors
+dotnet_diagnostic.CA1032.severity = none
+
+# CA1002: Do not expose generic lists
+dotnet_diagnostic.CA1002.severity = none
+
+# CA2227: Collection properties should be read only
+dotnet_diagnostic.CA2227.severity = none
+
+# CA1812: Unused classes
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1014: Mark assemblies with CLSCompliant
+dotnet_diagnostic.CA1014.severity = none
+
+# CA1848: For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions...'
+dotnet_diagnostic.CA1848.severity = none
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = suggestion
+
+dotnet_code_quality.ca1711.allowed_suffixes = EventHandler
+
+[*.proto]
+indent_style = space
