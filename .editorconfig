@@ -133,3 +133,6 @@ dotnet_code_quality.ca1711.allowed_suffixes = EventHandler
 
 [*.proto]
 indent_style = space
+
+[*.{cs,vb}]
+dotnet_diagnostic.CA1034.severity=silent

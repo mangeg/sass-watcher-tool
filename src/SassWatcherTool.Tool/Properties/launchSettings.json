@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SassWatcherTool.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
