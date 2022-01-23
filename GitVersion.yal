@@ -1,0 +1,14 @@
+build-metadata-padding: 1
+commits-since-version-source-padding: 1
+legacy-semver-padding: 1
+branches:
+  pull-request:
+    tag: pr
+    increment: None
+  feature:
+    regex: ^(features?[/-])|(user[/-])
+ignore:
+  sha: []
+merge-message-formats:
+  azdo: >
+    ^Merged? PR (?<PullRequestNumber>\d+): (?<SourceBranch>.*?) into (?<TargetBranch>.*?)

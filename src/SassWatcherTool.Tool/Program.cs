@@ -16,10 +16,14 @@ LoggingLevelSwitch restSwitch = new( LogEventLevel.Information );
 
 try
 {
+    Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .CreateLogger();
+
     var rootCommand = new RootCommand();
 
     var verboseLoggingOption = new Option<bool>( "-v", "Verbose logging" );
-    var systemVerboseLoggingOption = new Option<bool>( "--vv", "Verbose logging" );
+    var systemVerboseLoggingOption = new Option<bool>( "--vv", "Verbose + host logging" );
 
     rootCommand.AddGlobalOption( verboseLoggingOption );
     rootCommand.AddGlobalOption( systemVerboseLoggingOption );
@@ -65,13 +69,12 @@ try
        } )
        .Build();
 
-    await rootCommand.InvokeAsync( @"watch D:\Dev\Experiments\BlazorFromZero" );
-
-    //await host.InvokeAsync( args );
+    //await rootCommand.InvokeAsync( @"watch D:\Dev\Experiments\BlazorFromZero" );
+    await host.InvokeAsync( args );
 }
 catch ( Exception ex )
 {
-    Console.Write( ex );
+    Log.Logger.Error( ex, "Unhandled error" );
 }
 
 LoggerConfiguration CreateSerilogLogger( IConfiguration configuration, string appName )
