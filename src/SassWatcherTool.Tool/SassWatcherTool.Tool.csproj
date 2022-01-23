@@ -16,8 +16,8 @@
 		<PackageDescription>Monitor and watch sass/scss files for changes and compile</PackageDescription>
 		<Authors>mangeg</Authors>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>git</RepositoryUrl>
-		<PackageProjectUrl></PackageProjectUrl>
+		<RepositoryUrl>https://github.com/mangeg/sass-watcher-tool.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/mangeg/sass-watcher-tool</PackageProjectUrl>
 		<PackageTags>sass;scss;css</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageType>DotnetTool</PackageType>
