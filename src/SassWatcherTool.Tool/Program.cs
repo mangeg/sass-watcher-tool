@@ -69,7 +69,7 @@ try
        } )
        .Build();
 
-    //await rootCommand.InvokeAsync( @"watch D:\Dev\Experiments\BlazorFromZero" );
+    //await rootCommand.InvokeAsync( @"watch C:\Dev\Repos\service-externalconnections" );
     await host.InvokeAsync( args );
 }
 catch ( Exception ex )

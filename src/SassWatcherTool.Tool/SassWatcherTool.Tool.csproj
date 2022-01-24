@@ -13,7 +13,7 @@
 		<Title>WatchSass.Tool</Title>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
 		<PackageId>WatchSass.Tool</PackageId>
-		<PackageVersion>0.9.1-rc1</PackageVersion>
+		<PackageVersion>1.0.0</PackageVersion>
 		<PackageDescription>Monitor and watch sass/scss files for changes and compile</PackageDescription>
 		<Authors>mangeg</Authors>
 		<RepositoryType>git</RepositoryType>

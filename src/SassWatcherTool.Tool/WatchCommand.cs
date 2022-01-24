@@ -47,6 +47,9 @@ public class WatchCommand : Command
         public List<string> IncludeGlobs { get; set; } = new List<string>();
         public List<string> ExcludeGlobs { get; set; } = new List<string>();
         public bool Compressed { get; set; }
+        public bool SourceMap { get; set; }
+        public bool SourceMapIncludeContents { get; set; }
+        public string? SourceMapRootPath { get; set; }
         private string? ConfigFilePath { get; set; }
         private List<SourceTargetOption> Sources { get; set; } = new List<SourceTargetOption>();
 
@@ -63,6 +66,9 @@ public class WatchCommand : Command
                     optionsFile.IncludeGlobs.ForEach( IncludeGlobs.Add );
                     optionsFile.ExcludeGlobs.ForEach( ExcludeGlobs.Add );
                     Compressed = optionsFile.Compressed;
+                    SourceMap = optionsFile.SourceMap;
+                    SourceMapIncludeContents = optionsFile.SourceMapIncludeContents;
+                    SourceMapRootPath = optionsFile.SourceMapRootPath;
 
                     foreach ( OptionsFile.SourceTargetOptionsFile sourceInfo in optionsFile.Sources )
                     {
@@ -80,7 +86,12 @@ public class WatchCommand : Command
                             targetFileFullPath = new FileInfo( Path.Combine( targetFileFullPath, $"{sourceFileName}.css" ) ).FullName;
                         }
 
-                        Sources.Add( new SourceTargetOption( sourceFileFullPath, targetFileFullPath ) );
+                        Sources.Add( new SourceTargetOption( sourceFileFullPath, targetFileFullPath ) {
+                            Compressed = sourceInfo.Compressed,
+                            SourceMap = sourceInfo.SourceMap,
+                            SourceMapRoot = sourceInfo.SourceMapRootPath,
+                            SourceMapIncludeContents = sourceInfo.SourceMapIncludeContents
+                        } );
                     }
                 }
             }
@@ -90,18 +101,12 @@ public class WatchCommand : Command
 
             _matcher = CreateGlobMatcher();
 
-            CompilationOptions compilationOptions = new() {
-                SourceMap = true,
-                InlineSourceMap = true,
-                OutputStyle = Compressed ? OutputStyle.Compressed : OutputStyle.Expanded
-            };
-
             string relativPath = Path.GetRelativePath( _env.ContentRootPath, Dir.FullName );
             List<SassFile> sassFiles = ScanDirectory( relativPath ).ToList();
 
             foreach ( SassFile sassFile in sassFiles )
             {
-                Compile( sassFile, compilationOptions );
+                Compile( sassFile );
             }
 
             Channel<FileSystemEventArgs> changeStream = Channel.CreateUnbounded<FileSystemEventArgs>();
@@ -204,7 +209,7 @@ public class WatchCommand : Command
                             continue;
                         }
 
-                        Compile( sassFile, compilationOptions );
+                        Compile( sassFile );
 
                         sassFile.LastCompiled = DateTimeOffset.Now;
                     }
@@ -247,8 +252,16 @@ public class WatchCommand : Command
             return matcher;
         }
 
-        private bool Compile( SassFile sassFile, CompilationOptions compilationOptions )
+        private bool Compile( SassFile sassFile )
         {
+            var compileOptions = new CompilationOptions {
+                OutputStyle = Compressed ? OutputStyle.Compressed : OutputStyle.Expanded,
+                SourceMap = SourceMap,
+                SourceMapRootPath = SourceMapRootPath,
+                InlineSourceMap = false,
+                SourceMapIncludeContents = SourceMapIncludeContents,
+            };
+
             SourceTargetOption? sourceTargetOption = null;
             if ( ConfigFilePath is not null )
             {
@@ -262,11 +275,22 @@ public class WatchCommand : Command
                 }
             }
 
+            if ( sourceTargetOption is not null )
+            {
+                compileOptions.SourceMap = sourceTargetOption.SourceMap ?? compileOptions.SourceMap;
+                compileOptions.SourceMapRootPath = sourceTargetOption.SourceMapRoot ?? compileOptions.SourceMapRootPath;
+                compileOptions.SourceMapIncludeContents = sourceTargetOption.SourceMapIncludeContents ?? compileOptions.SourceMapIncludeContents;
+                if ( sourceTargetOption.Compressed.HasValue )
+                {
+                    compileOptions.OutputStyle = sourceTargetOption.Compressed.Value ? OutputStyle.Compressed : OutputStyle.Expanded;
+                }
+            }
+
             CompilationResult? compileResult;
             try
             {
                 _logger.LogInformation( "\t{File}", GetRelativePath( sassFile.Path ) );
-                compileResult = _compiler.Value.CompileFile( sassFile.Path, options: compilationOptions );
+                compileResult = _compiler.Value.CompileFile( sassFile.Path, options: compileOptions );
                 if ( _logger.IsEnabled( LogLevel.Trace ) )
                 {
                     foreach ( var file in compileResult.IncludedFilePaths )
@@ -306,6 +330,13 @@ public class WatchCommand : Command
                 if ( sourceTargetOption is not null )
                 {
                     targetFile = sourceTargetOption.Target;
+                }
+
+                if ( !string.IsNullOrWhiteSpace( compileResult.SourceMap ) )
+                {
+                    string targetMapFile = Path.Combine( Path.GetDirectoryName( targetFile ) ?? string.Empty, $"{Path.GetFileName( targetFile )}.map" );
+                    _logger.LogInformation( "\t\t-> {File}", GetRelativePath( targetMapFile ) );
+                    File.WriteAllText( targetMapFile, compileResult.SourceMap );
                 }
 
                 _logger.LogInformation( "\t\t-> {File}", GetRelativePath( targetFile ) );
@@ -352,12 +383,27 @@ public class WatchCommand : Command
             public List<string> IncludeGlobs { get; set; } = new List<string>();
             public List<string> ExcludeGlobs { get; set; } = new List<string>();
             public bool Compressed { get; set; }
+            public bool SourceMap { get; set; } = true;
+            public bool SourceMapIncludeContents { get; set; } = true;
+            public string? SourceMapRootPath { get; set; }
             public List<SourceTargetOptionsFile> Sources { get; set; } = new List<SourceTargetOptionsFile>();
 
-            internal record SourceTargetOptionsFile( string Source, string Target );
+            internal record SourceTargetOptionsFile( string Source, string Target )
+            {
+                public string? SourceMapRootPath { get; set; }
+                public bool? SourceMap { get; set; }
+                public bool? SourceMapIncludeContents { get; set; }
+                public bool? Compressed { get; set; }
+            };
         }
 
-        internal record SourceTargetOption( string Source, string Target );
+        internal record SourceTargetOption( string Source, string Target )
+        {
+            public string? SourceMapRoot { get; set; }
+            public bool? SourceMap { get; set; }
+            public bool? SourceMapIncludeContents { get; set; }
+            public bool? Compressed { get; set; }
+        }
 
         internal class SassFile
         {
